@@ -1,4 +1,4 @@
-package org.bradfordmiller.deduper.sql
+package org.bradfordmiller.sqlutils
 
 /**
  * class for returning correctly formatted types based on a specific database [vendor]

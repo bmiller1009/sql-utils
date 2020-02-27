@@ -1,4 +1,4 @@
-package org.bradfordmiller.deduper.sql
+package org.bradfordmiller.sqlutils
 
 import org.slf4j.LoggerFactory
 import java.sql.*

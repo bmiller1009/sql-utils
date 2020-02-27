@@ -127,7 +127,7 @@ publishing {
             }
 
             pom {
-                name.set("sql-utils")
+                name.set("sqlutils")
                 description.set("General deduping engine for JDBC sources with output to JDBC/csv targets")
                 url.set("https://github.com/bmiller1009/sql-utils")
                 licenses {
