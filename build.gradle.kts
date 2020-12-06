@@ -12,8 +12,8 @@ import java.time.Duration
 
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
-    id("org.jetbrains.kotlin.jvm").version("1.3.61")
-    id("org.jetbrains.dokka").version("0.10.0")
+    kotlin("jvm") version "1.4.20"
+    id("org.jetbrains.dokka") version "1.4.20"
     id("net.researchgate.release").version("2.6.0")
     id("java-library")
     id("com.bmuschko.nexus").version("2.3.1")
@@ -96,11 +96,6 @@ tasks {
             println("Defaults are set. Current software version is $version")
         }
     }
-
-    val dokka by getting(DokkaTask::class) {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/dokka"
-    }
 }
 
 nexusStaging {
@@ -128,7 +123,7 @@ publishing {
 
             pom {
                 name.set("sqlutils")
-                description.set("General deduping engine for JDBC sources with output to JDBC/csv targets")
+                description.set("General SQL utilities library")
                 url.set("https://github.com/bmiller1009/sql-utils")
                 licenses {
                     license {
