@@ -31,3 +31,6 @@ gradle.properties
 
 # Ignore Gradle project-specific cache directory
 .gradle
+gradlew
+gradle
+gradlew.bat
