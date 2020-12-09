@@ -73,6 +73,7 @@ dependencies {
     implementation("org.apache.logging.log4j",  "log4j-core",  "2.12.0")
     implementation("org.apache.logging.log4j",  "log4j-api",  "2.12.0")
     implementation("org.apache.logging.log4j", "log4j-slf4j-impl", "2.12.0")
+    implementation("org.xerial", "sqlite-jdbc","3.32.3.2")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
