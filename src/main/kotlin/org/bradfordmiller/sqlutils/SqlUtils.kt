@@ -38,6 +38,57 @@ class SqlUtils {
     companion object {
 
         private val logger = LoggerFactory.getLogger(SqlUtils::class.java)
+
+        /**
+         * returns stringified version of database column type based on [vendor], [typeName], [type], and [size]
+         */
+        private fun getType(vendor: String, typeName: String, type: Int, size: Int): String {
+            val sqlVendorTypes = SqlVendorTypes(vendor)
+            return if (type == Types.VARCHAR) {
+                sqlVendorTypes.getStringType() + sqlVendorTypes.getStringSize(size)
+            } else if(type == Types.BIGINT) {
+                sqlVendorTypes.getLongType()
+            } else if(type == Types.DOUBLE || type == Types.DECIMAL || type == Types.FLOAT ) {
+                sqlVendorTypes.getDecimalType(typeName)
+            } else {
+                typeName
+            }
+        }
+        /**
+         * returns a stringified list of columns based on [queryInfo], [vendor], [varcharPadding], [includeType], and
+         * [includeNullability]
+         */
+        private fun getColumnsCommaDelimited(
+                queryInfo: QueryInfo,
+                vendor: String,
+                varcharPadding: Int = 0,
+                includeType: Boolean = false,
+                includeNullability: Boolean = false
+        ): String {
+            return queryInfo.columnSet.map { qi ->
+                val colName = qi.columnName
+                val typeName = qi.columnTypeName
+                val size = qi.columnDisplaySize + varcharPadding
+                val isNull =
+                        if(includeNullability) {
+                            if (qi.isColumnNull) {
+                                "NULL"
+                            } else {
+                                "NOT NULL"
+                            }
+                        } else {
+                            ""
+                        }
+                val sqlType =
+                        if(includeType) {
+                            getType(vendor, typeName, qi.columnType, size)
+                        } else {
+                            ""
+                        }
+                "$colName $sqlType $isNull".trim()
+            }.joinToString(",")
+        }
+
         /**
          * returns a map of column names and associated values from [rs] and list of column names contained in [colNames]
          */
@@ -74,61 +125,13 @@ class SqlUtils {
                 qm.columnName to qm.columnIndex
             }.toMap()
         }
-        /**
-         * returns stringified version of database column type based on [vendor], [typeName], [type], and [size]
-         */
-        private fun getType(vendor: String, typeName: String, type: Int, size: Int): String {
-            val sqlVendorTypes = SqlVendorTypes(vendor)
-            return if (type == Types.VARCHAR) {
-                sqlVendorTypes.getStringType() + sqlVendorTypes.getStringSize(size)
-            } else if(type == Types.BIGINT) {
-                sqlVendorTypes.getLongType()
-            } else if(type == Types.DOUBLE || type == Types.DECIMAL || type == Types.FLOAT ) {
-                sqlVendorTypes.getDecimalType(typeName)
-            } else {
-                typeName
-            }
-        }
-        /**
-         * returns a stringified list of columns based on [queryInfo], [vendor], [varcharPadding], [includeType], and
-         * [includeNullability]
-         */
-        private fun getColumnsCommaDelimited(
-            queryInfo: QueryInfo,
-            vendor: String,
-            varcharPadding: Int = 0,
-            includeType: Boolean = false,
-            includeNullability: Boolean = false
-        ): String {
-            return queryInfo.columnSet.map { qi ->
-                val colName = qi.columnName
-                val typeName = qi.columnTypeName
-                val size = qi.columnDisplaySize + varcharPadding
-                val isNull =
-                    if(includeNullability) {
-                        if (qi.isColumnNull) {
-                            "NULL"
-                        } else {
-                            "NOT NULL"
-                        }
-                    } else {
-                        ""
-                    }
-                val sqlType =
-                    if(includeType) {
-                        getType(vendor, typeName, qi.columnType, size)
-                    } else {
-                        ""
-                    }
-                "$colName $sqlType $isNull"
-            }.joinToString(",")
-        }
+
         /**
          * returns a string representing a parameterized INSERT sql statement based on the [tableName] which is the
          * target of the INSERT, [qi], and the database [vendor]
          */
         fun generateInsert(tableName: String, qi: QueryInfo, vendor: String): String {
-            val insertClause = "INSERT INTO $tableName "
+            val insertClause = "INSERT INTO $tableName"
             val wildcards = (1..qi.columnCount).map {"?"}.joinToString(",")
             val columnsComma = getColumnsCommaDelimited(qi, vendor)
             val insertSql = "$insertClause ($columnsComma) VALUES ($wildcards)"
