@@ -125,4 +125,21 @@ class SqlUtilsTest {
         assert(testInsert == insert)
     }
 
+    @Test
+    //fun generateDDL(tableName: String, qi: QueryInfo, vendor: String, varcharPadding: Int): String {
+    fun generateDDL() {
+
+        val testDDL = "CREATE TABLE testTable (city TEXT,state TEXT,zip TEXT)"
+
+        val conn = getConnection()
+        val tableName = "testTable"
+        val sql = "SELECT city, state, zip FROM real_estate"
+        val qi = SqlUtils.getQueryInfo(sql, conn)
+        val vendor = "sqlite"
+
+        val ddl = SqlUtils.generateDDL(tableName, qi, vendor, 10)
+
+        assert(testDDL == ddl)
+    }
+
 }
