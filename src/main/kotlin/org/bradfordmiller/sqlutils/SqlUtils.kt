@@ -141,7 +141,7 @@ class SqlUtils {
         /**
          * returns a CREATE TABLE sql DDL based on the [tableName], [qi], [vendor], and [varcharPadding]
          */
-        fun generateDDL(tableName: String, qi: QueryInfo, vendor: String, varcharPadding: Int): String {
+        fun generateDDL(tableName: String, qi: QueryInfo, vendor: String, varcharPadding: Int = 0): String {
             val ctClause = "CREATE TABLE $tableName"
             val columnsComma = getColumnsCommaDelimited(qi, vendor, varcharPadding, true)
             val ddl = "$ctClause ($columnsComma)"

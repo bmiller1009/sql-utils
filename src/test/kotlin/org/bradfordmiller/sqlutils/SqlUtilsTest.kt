@@ -126,7 +126,6 @@ class SqlUtilsTest {
     }
 
     @Test
-    //fun generateDDL(tableName: String, qi: QueryInfo, vendor: String, varcharPadding: Int): String {
     fun generateDDL() {
 
         val testDDL = "CREATE TABLE testTable (city TEXT,state TEXT,zip TEXT)"
@@ -137,9 +136,78 @@ class SqlUtilsTest {
         val qi = SqlUtils.getQueryInfo(sql, conn)
         val vendor = "sqlite"
 
-        val ddl = SqlUtils.generateDDL(tableName, qi, vendor, 10)
+        val ddl = SqlUtils.generateDDL(tableName, qi, vendor)
 
         assert(testDDL == ddl)
     }
 
+    @Test
+    fun executeDDL() {
+
+        val conn = DriverManager.getConnection("jdbc:sqlite:src/test/resources/data/outputData/real_estate.db")
+        SqlUtils.deleteTableIfExists(conn, "testTable")
+
+        val dbmd = conn.metaData
+        val testDDL = "CREATE TABLE testTable (city TEXT,state TEXT,zip TEXT)"
+
+        SqlUtils.executeDDL(conn, testDDL)
+
+        assert(SqlUtils.tableExists(dbmd, "testTable"))
+    }
+
+    @Test
+    fun stringifyRow() {
+
+        val testRow = "SACRAMENTO, CA, 95838"
+
+        val row = getConnection().use {conn ->
+            val sql = "SELECT city, state, zip FROM real_estate"
+            conn.prepareStatement(sql).use {stmt ->
+                stmt.executeQuery().use {rs ->
+                    SqlUtils.stringifyRow(rs)
+                }
+            }
+        }
+        assert(testRow == row)
+    }
+
+    @Test
+    fun stringifyRowWithColumnList() {
+
+        val columns = mutableSetOf("city", "state")
+        val testRow = "SACRAMENTO, CA"
+
+        val row = getConnection().use {conn ->
+            val sql = "SELECT city, state, zip FROM real_estate"
+            conn.prepareStatement(sql).use {stmt ->
+                stmt.executeQuery().use {rs ->
+                    SqlUtils.stringifyRow(rs, columns)
+                }
+            }
+        }
+        assert(testRow == row)
+    }
+
+    @Test
+    fun getQueryInfo() {
+
+        val qmd =
+            QueryMetadata(
+            1,
+            "city",
+            12,
+            "VARCHAR",
+                2147483647,
+                true
+            )
+
+        val testQueryInfo = QueryInfo(1, mutableSetOf(qmd))
+
+        val qi = getConnection().use { conn ->
+            val sql = "SELECT city FROM real_estate"
+            SqlUtils.getQueryInfo(sql, conn)
+        }
+
+        assert(qi == testQueryInfo)
+    }
 }
