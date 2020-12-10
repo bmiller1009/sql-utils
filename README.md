@@ -28,7 +28,7 @@ If you're using [Maven](maven.apache.org) simply specify the GAV coordinate belo
 <dependency>
   <groupId>org.bradfordmiller</groupId>
   <artifactId>sqlutils</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 
@@ -37,7 +37,7 @@ If you're using [Maven](maven.apache.org) simply specify the GAV coordinate belo
 Add this GAV coordinate to your SBT dependency list
 
 ```sbt
-libraryDependencies += "org.bradfordmiller" %% "sqlutils" % "0.0.2"
+libraryDependencies += "org.bradfordmiller" %% "sqlutils" % "0.0.3"
 ```
 
 #### Running with Gradle
@@ -48,6 +48,6 @@ Add this GAV coordinate to your Gradle dependencies section
 dependencies {
     ...
     ...
-    implementation 'org.bradfordmiller:sqlutils:0.0.2'
+    implementation 'org.bradfordmiller:sqlutils:0.0.3'
 }
 ```
