@@ -5,3 +5,5 @@
 
 # sql-utils
 Utilities library for JDBC sql operations
+
+API docs were generated using [dokka](https://github.com/Kotlin/dokka) and are hosted [here](https://bmiller1009.github.io/sql-utils/).
