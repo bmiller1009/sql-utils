@@ -45,6 +45,11 @@ tasks.build {
     dependsOn("set-defaults")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 //Sample gradle CLI: gradle release -Prelease.useAutomaticVersion=true
 release {
     failOnCommitNeeded = true
